@@ -1,0 +1,1576 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Student Marksheet Management</title>
+
+
+    <style>
+
+        /* =========================
+           GLOBAL
+        ========================= */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f1f5f9;
+            color: #1e293b;
+        }
+
+
+        /* =========================
+           HEADER
+        ========================= */
+
+        header {
+            background: linear-gradient(
+                135deg,
+                #0f172a,
+                #1e40af
+            );
+
+            color: white;
+
+            padding: 20px 7%;
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+        }
+
+        header h1 {
+            font-size: 25px;
+        }
+
+        header p {
+            color: #bfdbfe;
+            margin-top: 5px;
+            font-size: 14px;
+        }
+
+
+        /* =========================
+           MAIN
+        ========================= */
+
+        .container {
+            max-width: 1200px;
+
+            margin: 35px auto;
+
+            padding: 0 20px;
+        }
+
+
+        /* =========================
+           MESSAGE
+        ========================= */
+
+        #message {
+            display: none;
+
+            padding: 14px;
+
+            border-radius: 8px;
+
+            margin-bottom: 20px;
+
+            text-align: center;
+
+            font-weight: bold;
+        }
+
+        .success {
+            display: block !important;
+
+            background: #dcfce7;
+
+            color: #166534;
+
+            border: 1px solid #86efac;
+        }
+
+        .error {
+            display: block !important;
+
+            background: #fee2e2;
+
+            color: #991b1b;
+
+            border: 1px solid #fca5a5;
+        }
+
+
+        /* =========================
+           CARD
+        ========================= */
+
+        .card {
+            background: white;
+
+            border-radius: 14px;
+
+            padding: 25px;
+
+            margin-bottom: 25px;
+
+            box-shadow:
+                0 5px 20px rgba(15,23,42,0.08);
+        }
+
+        .card h2 {
+            margin-bottom: 20px;
+
+            font-size: 20px;
+
+            color: #0f172a;
+        }
+
+
+        /* =========================
+           FORM
+        ========================= */
+
+        .form-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 18px;
+        }
+
+        .form-group label {
+            display: block;
+
+            margin-bottom: 7px;
+
+            font-weight: bold;
+
+            color: #334155;
+        }
+
+        input {
+            width: 100%;
+
+            padding: 12px;
+
+            border: 1px solid #cbd5e1;
+
+            border-radius: 7px;
+
+            font-size: 15px;
+        }
+
+        input:focus {
+            outline: none;
+
+            border-color: #2563eb;
+
+            box-shadow:
+                0 0 0 3px rgba(37,99,235,0.1);
+        }
+
+
+        /* =========================
+           SUBJECT MARKS
+        ========================= */
+
+        .subjects {
+            display: grid;
+
+            grid-template-columns:
+                repeat(5, 1fr);
+
+            gap: 15px;
+
+            margin-top: 20px;
+        }
+
+        .subject-box {
+            background: #f8fafc;
+
+            padding: 15px;
+
+            border-radius: 10px;
+
+            border: 1px solid #e2e8f0;
+        }
+
+        .subject-box label {
+            display: block;
+
+            font-size: 14px;
+
+            font-weight: bold;
+
+            margin-bottom: 7px;
+
+            color: #475569;
+        }
+
+
+        /* =========================
+           BUTTONS
+        ========================= */
+
+        .buttons {
+            display: flex;
+
+            gap: 12px;
+
+            margin-top: 25px;
+
+            flex-wrap: wrap;
+        }
+
+        button {
+            border: none;
+
+            border-radius: 7px;
+
+            padding: 12px 20px;
+
+            cursor: pointer;
+
+            font-size: 14px;
+
+            font-weight: bold;
+
+            transition: 0.2s;
+        }
+
+        .add-btn {
+            background: #2563eb;
+
+            color: white;
+        }
+
+        .add-btn:hover {
+            background: #1d4ed8;
+        }
+
+        .update-btn {
+            background: #16a34a;
+
+            color: white;
+
+            display: none;
+        }
+
+        .update-btn:hover {
+            background: #15803d;
+        }
+
+        .clear-btn {
+            background: #64748b;
+
+            color: white;
+        }
+
+        .clear-btn:hover {
+            background: #475569;
+        }
+
+        .delete-all-btn {
+            background: #dc2626;
+
+            color: white;
+        }
+
+        .delete-all-btn:hover {
+            background: #b91c1c;
+        }
+
+
+        /* =========================
+           SEARCH
+        ========================= */
+
+        .table-header {
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            gap: 15px;
+
+            margin-bottom: 20px;
+        }
+
+        .search {
+            max-width: 300px;
+        }
+
+
+        /* =========================
+           TABLE
+        ========================= */
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+
+            border-collapse: collapse;
+
+            min-width: 1000px;
+        }
+
+        th {
+            background: #1e293b;
+
+            color: white;
+
+            padding: 14px;
+
+            text-align: center;
+
+            font-size: 13px;
+        }
+
+        td {
+            padding: 13px;
+
+            border-bottom: 1px solid #e2e8f0;
+
+            text-align: center;
+
+            font-size: 14px;
+        }
+
+        tbody tr:hover {
+            background: #f8fafc;
+        }
+
+
+        /* =========================
+           RESULT BADGES
+        ========================= */
+
+        .pass {
+            background: #dcfce7;
+
+            color: #166534;
+
+            padding: 5px 10px;
+
+            border-radius: 20px;
+
+            font-weight: bold;
+        }
+
+        .fail {
+            background: #fee2e2;
+
+            color: #991b1b;
+
+            padding: 5px 10px;
+
+            border-radius: 20px;
+
+            font-weight: bold;
+        }
+
+
+        /* =========================
+           ACTION BUTTONS
+        ========================= */
+
+        .edit {
+            background: #f59e0b;
+
+            color: white;
+
+            padding: 7px 12px;
+
+            margin: 2px;
+        }
+
+        .edit:hover {
+            background: #d97706;
+        }
+
+        .delete {
+            background: #ef4444;
+
+            color: white;
+
+            padding: 7px 12px;
+
+            margin: 2px;
+        }
+
+        .delete:hover {
+            background: #dc2626;
+        }
+
+
+        /* =========================
+           EMPTY MESSAGE
+        ========================= */
+
+        .empty {
+            text-align: center;
+
+            padding: 30px;
+
+            color: #64748b;
+
+            display: none;
+        }
+
+
+        /* =========================
+           FOOTER
+        ========================= */
+
+        footer {
+            background: #0f172a;
+
+            color: white;
+
+            text-align: center;
+
+            padding: 20px;
+
+            margin-top: 40px;
+        }
+
+
+        /* =========================
+           RESPONSIVE
+        ========================= */
+
+        @media (max-width: 900px) {
+
+            .form-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .subjects {
+                grid-template-columns:
+                    repeat(3, 1fr);
+            }
+
+        }
+
+
+        @media (max-width: 600px) {
+
+            header {
+                flex-direction: column;
+
+                text-align: center;
+
+                gap: 8px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .subjects {
+                grid-template-columns: 1fr;
+            }
+
+            .table-header {
+                flex-direction: column;
+
+                align-items: stretch;
+            }
+
+            .search {
+                max-width: 100%;
+            }
+
+            .buttons {
+                flex-direction: column;
+            }
+
+            button {
+                width: 100%;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- =========================
+     HEADER
+========================= -->
+
+<header>
+
+    <div>
+
+        <h1>Student Marksheet</h1>
+
+        <p>Student Result Management System</p>
+
+    </div>
+
+</header>
+
+
+<div class="container">
+
+
+    <!-- MESSAGE -->
+
+    <div id="message"></div>
+
+
+    <!-- =========================
+         STUDENT FORM
+    ========================= -->
+
+    <div class="card">
+
+        <h2 id="formTitle">
+            Add Student Marks
+        </h2>
+
+
+        <form id="studentForm">
+
+
+            <!-- Student Details -->
+
+            <div class="form-grid">
+
+
+                <div class="form-group">
+
+                    <label>
+                        Student Name
+                    </label>
+
+                    <input
+                        type="text"
+                        id="studentName"
+                        placeholder="Enter student name"
+                        required>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Roll Number
+                    </label>
+
+                    <input
+                        type="text"
+                        id="rollNumber"
+                        placeholder="Enter roll number"
+                        required>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Class
+                    </label>
+
+                    <input
+                        type="text"
+                        id="studentClass"
+                        placeholder="e.g. BCA - 3"
+                        required>
+
+                </div>
+
+            </div>
+
+
+            <!-- Subjects -->
+
+            <div class="subjects">
+
+
+                <div class="subject-box">
+
+                    <label>HTML</label>
+
+                    <input
+                        type="number"
+                        id="html"
+                        min="0"
+                        max="100"
+                        placeholder="0 - 100"
+                        required>
+
+                </div>
+
+
+                <div class="subject-box">
+
+                    <label>CSS</label>
+
+                    <input
+                        type="number"
+                        id="css"
+                        min="0"
+                        max="100"
+                        placeholder="0 - 100"
+                        required>
+
+                </div>
+
+
+                <div class="subject-box">
+
+                    <label>JavaScript</label>
+
+                    <input
+                        type="number"
+                        id="javascript"
+                        min="0"
+                        max="100"
+                        placeholder="0 - 100"
+                        required>
+
+                </div>
+
+
+                <div class="subject-box">
+
+                    <label>Python</label>
+
+                    <input
+                        type="number"
+                        id="python"
+                        min="0"
+                        max="100"
+                        placeholder="0 - 100"
+                        required>
+
+                </div>
+
+
+                <div class="subject-box">
+
+                    <label>Database</label>
+
+                    <input
+                        type="number"
+                        id="database"
+                        min="0"
+                        max="100"
+                        placeholder="0 - 100"
+                        required>
+
+                </div>
+
+
+            </div>
+
+
+            <!-- Buttons -->
+
+            <div class="buttons">
+
+                <button
+                    type="submit"
+                    class="add-btn"
+                    id="addButton">
+
+                    + Add Student
+
+                </button>
+
+
+                <button
+                    type="button"
+                    class="update-btn"
+                    id="updateButton"
+                    onclick="updateStudent()">
+
+                    ✓ Update Student
+
+                </button>
+
+
+                <button
+                    type="button"
+                    class="clear-btn"
+                    onclick="clearForm()">
+
+                    Clear
+
+                </button>
+
+            </div>
+
+
+        </form>
+
+    </div>
+
+
+    <!-- =========================
+         STUDENT TABLE
+    ========================= -->
+
+    <div class="card">
+
+
+        <div class="table-header">
+
+            <h2>
+                Student Marksheet
+            </h2>
+
+
+            <input
+                type="text"
+                class="search"
+                id="search"
+                placeholder="Search student..."
+                onkeyup="searchStudent()">
+
+
+            <button
+                class="delete-all-btn"
+                onclick="deleteAll()">
+
+                Delete All
+
+            </button>
+
+        </div>
+
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>Sr.</th>
+
+                        <th>Name</th>
+
+                        <th>Roll No.</th>
+
+                        <th>Class</th>
+
+                        <th>Total</th>
+
+                        <th>Percentage</th>
+
+                        <th>Grade</th>
+
+                        <th>Result</th>
+
+                        <th>Actions</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody id="studentTable">
+
+                </tbody>
+
+            </table>
+
+
+            <div
+                class="empty"
+                id="emptyMessage">
+
+                No student records found.
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+</div>
+
+
+<!-- FOOTER -->
+
+<footer>
+
+    <p>
+        © 2026 Student Marksheet Management System
+    </p>
+
+</footer>
+
+
+
+<script>
+
+
+/* =====================================
+   GET DATA FROM LOCAL STORAGE
+===================================== */
+
+let students =
+    JSON.parse(
+        localStorage.getItem("students")
+    ) || [];
+
+
+let editIndex = -1;
+
+
+/* =====================================
+   SAVE DATA
+===================================== */
+
+function saveData() {
+
+    localStorage.setItem(
+        "students",
+        JSON.stringify(students)
+    );
+
+}
+
+
+/* =====================================
+   SHOW MESSAGE
+===================================== */
+
+function showMessage(text, type) {
+
+    const message =
+        document.getElementById("message");
+
+    message.textContent = text;
+
+    message.className = type;
+
+    message.style.display = "block";
+
+
+    setTimeout(function() {
+
+        message.style.display = "none";
+
+    }, 3000);
+
+}
+
+
+/* =====================================
+   GET GRADE
+===================================== */
+
+function getGrade(percentage) {
+
+    if (percentage >= 90)
+        return "A+";
+
+    if (percentage >= 80)
+        return "A";
+
+    if (percentage >= 70)
+        return "B";
+
+    if (percentage >= 60)
+        return "C";
+
+    if (percentage >= 50)
+        return "D";
+
+    if (percentage >= 40)
+        return "E";
+
+    return "F";
+
+}
+
+
+/* =====================================
+   GET RESULT
+===================================== */
+
+function getResult(marks) {
+
+    /*
+       Passing marks = 35
+    */
+
+    for (let mark of marks) {
+
+        if (mark < 35) {
+
+            return "Fail";
+
+        }
+
+    }
+
+    return "Pass";
+
+}
+
+
+/* =====================================
+   ADD STUDENT
+===================================== */
+
+document
+.getElementById("studentForm")
+.addEventListener(
+    "submit",
+    function(event) {
+
+        event.preventDefault();
+
+
+        /* Get values */
+
+        const name =
+            document.getElementById("studentName")
+            .value.trim();
+
+        const roll =
+            document.getElementById("rollNumber")
+            .value.trim();
+
+        const studentClass =
+            document.getElementById("studentClass")
+            .value.trim();
+
+
+        const marks = [
+
+            Number(
+                document.getElementById("html").value
+            ),
+
+            Number(
+                document.getElementById("css").value
+            ),
+
+            Number(
+                document.getElementById("javascript").value
+            ),
+
+            Number(
+                document.getElementById("python").value
+            ),
+
+            Number(
+                document.getElementById("database").value
+            )
+
+        ];
+
+
+        /* Check Marks */
+
+        for (let mark of marks) {
+
+            if (
+                mark < 0 ||
+                mark > 100 ||
+                isNaN(mark)
+            ) {
+
+                showMessage(
+                    "Please enter valid marks between 0 and 100.",
+                    "error"
+                );
+
+                return;
+
+            }
+
+        }
+
+
+        /* Check Duplicate Roll Number */
+
+        const duplicate =
+            students.some(
+                student =>
+                    student.roll === roll
+                    &&
+                    editIndex === -1
+            );
+
+
+        if (duplicate) {
+
+            showMessage(
+                "Roll number already exists.",
+                "error"
+            );
+
+            return;
+
+        }
+
+
+        /* Calculate */
+
+        const total =
+            marks.reduce(
+                (sum, mark) =>
+                    sum + mark,
+                0
+            );
+
+
+        const percentage =
+            total / marks.length;
+
+
+        const grade =
+            getGrade(percentage);
+
+
+        const result =
+            getResult(marks);
+
+
+        /* Student Object */
+
+        const student = {
+
+            name: name,
+
+            roll: roll,
+
+            studentClass: studentClass,
+
+            marks: marks,
+
+            total: total,
+
+            percentage:
+                percentage.toFixed(2),
+
+            grade: grade,
+
+            result: result
+
+        };
+
+
+        /* Add */
+
+        students.push(student);
+
+
+        saveData();
+
+        displayStudents();
+
+        clearForm();
+
+
+        showMessage(
+            "Student added successfully!",
+            "success"
+        );
+
+    }
+);
+
+
+/* =====================================
+   DISPLAY STUDENTS
+===================================== */
+
+function displayStudents(
+    list = students
+) {
+
+    const table =
+        document.getElementById(
+            "studentTable"
+        );
+
+    table.innerHTML = "";
+
+
+    const empty =
+        document.getElementById(
+            "emptyMessage"
+        );
+
+
+    if (list.length === 0) {
+
+        empty.style.display = "block";
+
+        return;
+
+    }
+
+
+    empty.style.display = "none";
+
+
+    list.forEach(
+        function(student, index) {
+
+            const row =
+                document.createElement("tr");
+
+
+            row.innerHTML = `
+
+                <td>${index + 1}</td>
+
+                <td>${student.name}</td>
+
+                <td>${student.roll}</td>
+
+                <td>${student.studentClass}</td>
+
+                <td>${student.total} / 500</td>
+
+                <td>${student.percentage}%</td>
+
+                <td>${student.grade}</td>
+
+                <td>
+
+                    <span class="${
+                        student.result === "Pass"
+                        ? "pass"
+                        : "fail"
+                    }">
+
+                        ${student.result}
+
+                    </span>
+
+                </td>
+
+                <td>
+
+                    <button
+                        class="edit"
+                        onclick="editStudent(${students.indexOf(student)})">
+
+                        Edit
+
+                    </button>
+
+                    <button
+                        class="delete"
+                        onclick="deleteStudent(${students.indexOf(student)})">
+
+                        Delete
+
+                    </button>
+
+                </td>
+
+            `;
+
+
+            table.appendChild(row);
+
+        }
+    );
+
+}
+
+
+/* =====================================
+   EDIT STUDENT
+===================================== */
+
+function editStudent(index) {
+
+    const student =
+        students[index];
+
+
+    editIndex = index;
+
+
+    /* Fill form */
+
+    document.getElementById("studentName")
+        .value = student.name;
+
+    document.getElementById("rollNumber")
+        .value = student.roll;
+
+    document.getElementById("studentClass")
+        .value = student.studentClass;
+
+
+    document.getElementById("html")
+        .value = student.marks[0];
+
+    document.getElementById("css")
+        .value = student.marks[1];
+
+    document.getElementById("javascript")
+        .value = student.marks[2];
+
+    document.getElementById("python")
+        .value = student.marks[3];
+
+    document.getElementById("database")
+        .value = student.marks[4];
+
+
+    /* Buttons */
+
+    document.getElementById("addButton")
+        .style.display = "none";
+
+    document.getElementById("updateButton")
+        .style.display = "block";
+
+
+    document.getElementById("formTitle")
+        .textContent = "Edit Student";
+
+
+    /* Scroll */
+
+    window.scrollTo({
+
+        top: 0,
+
+        behavior: "smooth"
+
+    });
+
+}
+
+
+/* =====================================
+   UPDATE STUDENT
+===================================== */
+
+function updateStudent() {
+
+    if (editIndex === -1) {
+
+        return;
+
+    }
+
+
+    const name =
+        document.getElementById("studentName")
+        .value.trim();
+
+    const roll =
+        document.getElementById("rollNumber")
+        .value.trim();
+
+    const studentClass =
+        document.getElementById("studentClass")
+        .value.trim();
+
+
+    const marks = [
+
+        Number(
+            document.getElementById("html").value
+        ),
+
+        Number(
+            document.getElementById("css").value
+        ),
+
+        Number(
+            document.getElementById("javascript").value
+        ),
+
+        Number(
+            document.getElementById("python").value
+        ),
+
+        Number(
+            document.getElementById("database").value
+        )
+
+    ];
+
+
+    /* Validate */
+
+    for (let mark of marks) {
+
+        if (
+            mark < 0 ||
+            mark > 100 ||
+            isNaN(mark)
+        ) {
+
+            showMessage(
+                "Marks must be between 0 and 100.",
+                "error"
+            );
+
+            return;
+
+        }
+
+    }
+
+
+    const total =
+        marks.reduce(
+            (sum, mark) =>
+                sum + mark,
+            0
+        );
+
+
+    const percentage =
+        total / marks.length;
+
+
+    students[editIndex] = {
+
+        name: name,
+
+        roll: roll,
+
+        studentClass:
+            studentClass,
+
+        marks: marks,
+
+        total: total,
+
+        percentage:
+            percentage.toFixed(2),
+
+        grade:
+            getGrade(percentage),
+
+        result:
+            getResult(marks)
+
+    };
+
+
+    saveData();
+
+    displayStudents();
+
+    clearForm();
+
+
+    showMessage(
+        "Student updated successfully!",
+        "success"
+    );
+
+}
+
+
+/* =====================================
+   DELETE STUDENT
+===================================== */
+
+function deleteStudent(index) {
+
+    const student =
+        students[index];
+
+
+    const confirmDelete =
+        confirm(
+            "Are you sure you want to delete " +
+            student.name +
+            "?"
+        );
+
+
+    if (!confirmDelete) {
+
+        return;
+
+    }
+
+
+    students.splice(index, 1);
+
+
+    saveData();
+
+    displayStudents();
+
+
+    showMessage(
+        "Student deleted successfully!",
+        "success"
+    );
+
+}
+
+
+/* =====================================
+   DELETE ALL
+===================================== */
+
+function deleteAll() {
+
+    if (students.length === 0) {
+
+        showMessage(
+            "There are no records to delete.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    const confirmDelete =
+        confirm(
+            "Are you sure you want to delete ALL students?"
+        );
+
+
+    if (!confirmDelete) {
+
+        return;
+
+    }
+
+
+    students = [];
+
+
+    saveData();
+
+    displayStudents();
+
+    clearForm();
+
+
+    showMessage(
+        "All student records deleted successfully!",
+        "success"
+    );
+
+}
+
+
+/* =====================================
+   CLEAR FORM
+===================================== */
+
+function clearForm() {
+
+    document
+        .getElementById("studentForm")
+        .reset();
+
+
+    editIndex = -1;
+
+
+    document.getElementById("addButton")
+        .style.display = "block";
+
+
+    document.getElementById("updateButton")
+        .style.display = "none";
+
+
+    document.getElementById("formTitle")
+        .textContent =
+        "Add Student Marks";
+
+}
+
+
+/* =====================================
+   SEARCH STUDENT
+===================================== */
+
+function searchStudent() {
+
+    const search =
+        document.getElementById("search")
+        .value
+        .toLowerCase();
+
+
+    const filtered =
+        students.filter(
+            student =>
+
+                student.name
+                    .toLowerCase()
+                    .includes(search)
+
+                ||
+
+                student.roll
+                    .toLowerCase()
+                    .includes(search)
+
+                ||
+
+                student.studentClass
+                    .toLowerCase()
+                    .includes(search)
+        );
+
+
+    displayStudents(filtered);
+
+}
+
+
+/* =====================================
+   INITIAL DISPLAY
+===================================== */
+
+displayStudents();
+
+</script>
+
+
+</body>
+
+</html>
