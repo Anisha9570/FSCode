@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Dynamic Profile Page</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f1f5f9;
+            color: #333;
+        }
+
+        /* Header */
+
+        header {
+            background: #1e293b;
+            color: white;
+            padding: 20px 8%;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            color: #38bdf8;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+        }
+
+        /* Main Container */
+
+        .container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        /* Profile */
+
+        .profile {
+            background: white;
+            padding: 40px;
+
+            border-radius: 15px;
+
+            display: flex;
+            align-items: center;
+            gap: 40px;
+
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+
+            margin-bottom: 25px;
+        }
+
+        .profile img {
+            width: 170px;
+            height: 170px;
+
+            border-radius: 50%;
+            object-fit: cover;
+
+            border: 5px solid #38bdf8;
+        }
+
+        .profile-info {
+            flex: 1;
+        }
+
+        .profile-info h2 {
+            font-size: 32px;
+            color: #1e293b;
+            margin-bottom: 10px;
+        }
+
+        .profile-info h3 {
+            color: #0284c7;
+            margin-bottom: 15px;
+        }
+
+        .profile-info p {
+            color: #64748b;
+            line-height: 1.6;
+        }
+
+        /* Edit Button */
+
+        .edit-btn {
+            margin-top: 20px;
+
+            background: #0284c7;
+            color: white;
+
+            border: none;
+            padding: 12px 25px;
+
+            border-radius: 7px;
+
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .edit-btn:hover {
+            background: #0369a1;
+        }
+
+        /* Cards */
+
+        .card {
+            background: white;
+
+            padding: 30px;
+
+            border-radius: 12px;
+
+            margin-bottom: 25px;
+
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+
+        .card h2 {
+            color: #1e293b;
+            margin-bottom: 15px;
+
+            border-left: 5px solid #38bdf8;
+            padding-left: 10px;
+        }
+
+        .card p {
+            color: #64748b;
+            line-height: 1.7;
+        }
+
+        /* EDIT FORM */
+
+        #editForm {
+            display: none;
+        }
+
+        .edit-form {
+            background: white;
+
+            padding: 30px;
+
+            border-radius: 12px;
+
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+
+            /* FLEXBOX */
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .form-group {
+            flex: 1 1 45%;
+            min-width: 250px;
+        }
+
+        .form-group.full {
+            flex: 1 1 100%;
+        }
+
+        label {
+            display: block;
+
+            margin-bottom: 7px;
+
+            font-weight: bold;
+            color: #334155;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+
+            padding: 12px;
+
+            border: 1px solid #cbd5e1;
+
+            border-radius: 7px;
+
+            font-size: 15px;
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        input:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #0284c7;
+        }
+
+        /* Form Buttons */
+
+        .form-buttons {
+            flex: 1 1 100%;
+
+            display: flex;
+            gap: 15px;
+        }
+
+        .save-btn,
+        .cancel-btn {
+            padding: 12px 25px;
+
+            border: none;
+            border-radius: 7px;
+
+            cursor: pointer;
+
+            font-size: 15px;
+            font-weight: bold;
+        }
+
+        .save-btn {
+            background: #16a34a;
+            color: white;
+        }
+
+        .save-btn:hover {
+            background: #15803d;
+        }
+
+        .cancel-btn {
+            background: #64748b;
+            color: white;
+        }
+
+        .cancel-btn:hover {
+            background: #475569;
+        }
+
+        /* Success Message */
+
+        #successMessage {
+            display: none;
+
+            background: #dcfce7;
+            color: #166534;
+
+            padding: 15px;
+
+            border-radius: 8px;
+
+            margin-bottom: 20px;
+
+            text-align: center;
+
+            font-weight: bold;
+        }
+
+        /* Footer */
+
+        footer {
+            margin-top: 40px;
+
+            padding: 20px;
+
+            text-align: center;
+
+            background: #1e293b;
+
+            color: white;
+        }
+
+        /* Responsive */
+
+        @media (max-width: 768px) {
+
+            header {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .profile {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .form-group {
+                flex: 1 1 100%;
+            }
+
+        }
+
+        @media (max-width: 480px) {
+
+            .profile {
+                padding: 25px 15px;
+            }
+
+            .profile img {
+                width: 130px;
+                height: 130px;
+            }
+
+            .profile-info h2 {
+                font-size: 25px;
+            }
+
+            .form-buttons {
+                flex-direction: column;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- HEADER -->
+
+    <header>
+
+        <h1>My Profile</h1>
+
+        <nav>
+            <a href="#profile">Profile</a>
+        </nav>
+
+    </header>
+
+
+    <div class="container">
+
+
+        <!-- SUCCESS MESSAGE -->
+
+        <div id="successMessage">
+            Profile updated successfully!
+        </div>
+
+
+        <!-- PROFILE -->
+
+        <section class="profile" id="profile">
+
+            <img id="profileImage"
+                src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=400&q=80"
+                alt="Profile Photo">
+
+            <div class="profile-info">
+
+                <h2 id="nameDisplay">
+                    John Doe
+                </h2>
+
+                <h3 id="roleDisplay">
+                    Web Developer
+                </h3>
+
+                <p id="bioDisplay">
+                    I am a passionate web developer interested
+                    in creating modern and responsive websites.
+                </p>
+
+
+                <!-- EDIT BUTTON -->
+
+                <button
+                    class="edit-btn"
+                    onclick="openEdit()">
+
+                    ✏ Edit Profile
+
+                </button>
+
+            </div>
+
+        </section>
+
+
+        <!-- ABOUT -->
+
+        <section class="card">
+
+            <h2>About Me</h2>
+
+            <p id="aboutDisplay">
+                I enjoy designing websites and learning
+                new web technologies.
+            </p>
+
+        </section>
+
+
+        <!-- SKILLS -->
+
+        <section class="card">
+
+            <h2>Skills</h2>
+
+            <p id="skillsDisplay">
+                HTML, CSS, JavaScript, Python, Java
+            </p>
+
+        </section>
+
+
+        <!-- EDUCATION -->
+
+        <section class="card">
+
+            <h2>Education</h2>
+
+            <p id="educationDisplay">
+                Bachelor of Computer Applications - XYZ University
+            </p>
+
+        </section>
+
+
+        <!-- CONTACT -->
+
+        <section class="card">
+
+            <h2>Contact</h2>
+
+            <p>
+                <b>Email:</b>
+                <span id="emailDisplay">
+                    johndoe@example.com
+                </span>
+            </p>
+
+            <br>
+
+            <p>
+                <b>Phone:</b>
+                <span id="phoneDisplay">
+                    +91 98765 43210
+                </span>
+            </p>
+
+            <br>
+
+            <p>
+                <b>Location:</b>
+                <span id="locationDisplay">
+                    Ahmedabad, India
+                </span>
+            </p>
+
+        </section>
+
+
+        <!-- EDIT FORM -->
+
+        <section id="editForm">
+
+            <h2 style="margin-bottom:20px;">
+                Edit Profile
+            </h2>
+
+            <form class="edit-form"
+                onsubmit="saveProfile(event)">
+
+
+                <!-- Name -->
+
+                <div class="form-group">
+
+                    <label>Full Name</label>
+
+                    <input
+                        type="text"
+                        id="nameInput"
+                        value="John Doe"
+                        required>
+
+                </div>
+
+
+                <!-- Role -->
+
+                <div class="form-group">
+
+                    <label>Profession</label>
+
+                    <input
+                        type="text"
+                        id="roleInput"
+                        value="Web Developer"
+                        required>
+
+                </div>
+
+
+                <!-- Photo -->
+
+                <div class="form-group full">
+
+                    <label>Profile Photo</label>
+
+                    <input
+                        type="file"
+                        id="photoInput"
+                        accept="image/*">
+
+                </div>
+
+
+                <!-- Bio -->
+
+                <div class="form-group full">
+
+                    <label>Bio</label>
+
+                    <textarea id="bioInput">I am a passionate web developer interested in creating modern and responsive websites.</textarea>
+
+                </div>
+
+
+                <!-- About -->
+
+                <div class="form-group full">
+
+                    <label>About Me</label>
+
+                    <textarea id="aboutInput">I enjoy designing websites and learning new web technologies.</textarea>
+
+                </div>
+
+
+                <!-- Skills -->
+
+                <div class="form-group">
+
+                    <label>Skills</label>
+
+                    <input
+                        type="text"
+                        id="skillsInput"
+                        value="HTML, CSS, JavaScript, Python, Java">
+
+                </div>
+
+
+                <!-- Education -->
+
+                <div class="form-group">
+
+                    <label>Education</label>
+
+                    <input
+                        type="text"
+                        id="educationInput"
+                        value="Bachelor of Computer Applications - XYZ University">
+
+                </div>
+
+
+                <!-- Email -->
+
+                <div class="form-group">
+
+                    <label>Email</label>
+
+                    <input
+                        type="email"
+                        id="emailInput"
+                        value="johndoe@example.com">
+
+                </div>
+
+
+                <!-- Phone -->
+
+                <div class="form-group">
+
+                    <label>Phone</label>
+
+                    <input
+                        type="text"
+                        id="phoneInput"
+                        value="+91 98765 43210">
+
+                </div>
+
+
+                <!-- Location -->
+
+                <div class="form-group">
+
+                    <label>Location</label>
+
+                    <input
+                        type="text"
+                        id="locationInput"
+                        value="Ahmedabad, India">
+
+                </div>
+
+
+                <!-- Buttons -->
+
+                <div class="form-buttons">
+
+                    <button
+                        type="submit"
+                        class="save-btn">
+
+                        ✓ Save Changes
+
+                    </button>
+
+
+                    <button
+                        type="button"
+                        class="cancel-btn"
+                        onclick="closeEdit()">
+
+                        Cancel
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </section>
+
+
+    </div>
+
+
+    <!-- FOOTER -->
+
+    <footer>
+
+        <p>
+            © 2026 Dynamic Profile Page
+        </p>
+
+    </footer>
+
+
+    <script>
+
+        /* OPEN EDIT FORM */
+
+        function openEdit() {
+
+            document.getElementById("editForm").style.display =
+                "block";
+
+            document.getElementById("editForm")
+                .scrollIntoView({
+                    behavior: "smooth"
+                });
+
+        }
+
+
+        /* CLOSE EDIT FORM */
+
+        function closeEdit() {
+
+            document.getElementById("editForm").style.display =
+                "none";
+
+        }
+
+
+        /* SAVE PROFILE */
+
+        function saveProfile(event) {
+
+            event.preventDefault();
+
+
+            /* Get values */
+
+            let name =
+                document.getElementById("nameInput").value;
+
+            let role =
+                document.getElementById("roleInput").value;
+
+            let bio =
+                document.getElementById("bioInput").value;
+
+            let about =
+                document.getElementById("aboutInput").value;
+
+            let skills =
+                document.getElementById("skillsInput").value;
+
+            let education =
+                document.getElementById("educationInput").value;
+
+            let email =
+                document.getElementById("emailInput").value;
+
+            let phone =
+                document.getElementById("phoneInput").value;
+
+            let location =
+                document.getElementById("locationInput").value;
+
+
+            /* Update Profile */
+
+            document.getElementById("nameDisplay").textContent =
+                name;
+
+            document.getElementById("roleDisplay").textContent =
+                role;
+
+            document.getElementById("bioDisplay").textContent =
+                bio;
+
+            document.getElementById("aboutDisplay").textContent =
+                about;
+
+            document.getElementById("skillsDisplay").textContent =
+                skills;
+
+            document.getElementById("educationDisplay").textContent =
+                education;
+
+            document.getElementById("emailDisplay").textContent =
+                email;
+
+            document.getElementById("phoneDisplay").textContent =
+                phone;
+
+            document.getElementById("locationDisplay").textContent =
+                location;
+
+
+            /* Profile Photo */
+
+            let photo =
+                document.getElementById("photoInput").files[0];
+
+
+            if (photo) {
+
+                let reader = new FileReader();
+
+                reader.onload = function() {
+
+                    document.getElementById("profileImage").src =
+                        reader.result;
+
+                };
+
+                reader.readAsDataURL(photo);
+
+            }
+
+
+            /* Close Form */
+
+            closeEdit();
+
+
+            /* Success Message */
+
+            let message =
+                document.getElementById("successMessage");
+
+            message.style.display = "block";
+
+
+            setTimeout(function() {
+
+                message.style.display = "none";
+
+            }, 3000);
+
+
+            /* Scroll Top */
+
+            window.scrollTo({
+
+                top: 0,
+
+                behavior: "smooth"
+
+            });
+
+        }
+
+    </script>
+
+
+</body>
+
+</html>
